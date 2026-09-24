@@ -80,7 +80,7 @@ export const DailyTrackerModal: React.FC<DailyTrackerModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto">
-      <div className="w-full max-w-lg bg-white rounded-3xl p-5 sm:p-6 shadow-2xl border border-rose-100 my-6 max-h-[92vh] flex flex-col">
+      <div className="w-full max-w-xl md:max-w-2xl bg-white rounded-3xl p-5 sm:p-6 shadow-2xl border border-rose-100 my-4 max-h-[92vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-rose-100 shrink-0">
           <div>

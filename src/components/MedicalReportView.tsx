@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { UserProfile, CyclePrediction, PastCycle, DailyLog } from '../types';
 import { formatThaiDate, formatThaiDateFull } from '../utils/cycleCalculations';
-import { FileText, Printer, CheckCircle2, AlertCircle, BarChart3, TrendingUp, Sparkles, Activity, ArrowLeft } from 'lucide-react';
+import { FileText, Printer, CheckCircle2, AlertCircle, BarChart3, TrendingUp, Sparkles, Activity, ArrowLeft, Download, ShieldCheck } from 'lucide-react';
 
 interface MedicalReportViewProps {
   user: UserProfile;
@@ -35,293 +35,252 @@ export const MedicalReportView: React.FC<MedicalReportViewProps> = ({
   };
 
   return (
-    <div className="space-y-4 pb-20">
+    <div className="space-y-5 pb-16">
       {/* Top Header */}
-      <div className="bg-white rounded-3xl p-4 border border-rose-100 shadow-xs flex items-center justify-between">
+      <div className="bg-white rounded-3xl p-4 sm:p-5 border border-rose-100 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <span className="text-[10px] font-bold text-rose-500 uppercase tracking-widest">
-            GYNECOLOGY ANALYTICS
+            GYNECOLOGY ANALYTICS & CLINICAL REPORT
           </span>
-          <h2 className="text-base font-bold text-slate-800 flex items-center gap-1.5">
-            <Activity className="w-4 h-4 text-rose-500" />
-            รายงานวิเคราะห์สุขภาพสูตินรีเวช
+          <h2 className="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+            <Activity className="w-5 h-5 text-rose-500" />
+            รายงานวิเคราะห์สุขภาพสูตินรีเวช สำหรับแพทย์
           </h2>
         </div>
         <button
           onClick={() => setShowPrintModal(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-500 hover:bg-rose-600 text-white text-xs font-semibold shadow-xs shadow-rose-500/20 active:scale-95 transition-all"
+          className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-semibold shadow-xs shadow-rose-500/20 active:scale-95 transition-all self-start sm:self-auto"
         >
-          <Printer className="w-3.5 h-3.5" />
-          <span>พิมพ์รายงานแพทย์</span>
+          <Printer className="w-4 h-4" />
+          <span>พิมพ์หรือดาวน์โหลดรายงาน (PDF)</span>
         </button>
       </div>
 
       {/* Cycle Regularity Card */}
       <div className="bg-white rounded-3xl p-5 border border-rose-100 shadow-xs space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <p className="text-xs font-bold text-slate-800">
-              ดัชนีความสม่ำเสมอของรอบเดือน (Cycle Regularity)
-            </p>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              วิเคราะห์จาก 5 รอบเดือนย้อนหลัง
+            <h3 className="text-sm font-bold text-slate-800">
+              ดัชนีความสม่ำเสมอของรอบเดือน (Cycle Regularity Score)
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              คำนวณตามเกณฑ์ ACOG (American College of Obstetricians and Gynecologists)
             </p>
           </div>
-          <div className="text-right">
-            <span className="text-2xl font-bold font-mono text-emerald-600">
+          <div className="text-left sm:text-right">
+            <span className="text-3xl font-extrabold font-mono text-emerald-600">
               {prediction.cycleRegularityScore}%
             </span>
-            <p className="text-[10px] font-semibold text-emerald-700">
+            <p className="text-xs font-bold text-emerald-700">
               {prediction.regularityStatus}
             </p>
           </div>
         </div>
 
-        {/* 4 Stat Boxes */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 text-center">
-            <p className="text-[10px] text-slate-400 font-semibold uppercase">รอบเดือนเฉลี่ย</p>
-            <p className="text-base font-bold text-slate-800 font-mono mt-0.5">{avgCycle} วัน</p>
-            <span className="text-[9px] text-slate-400">เกณฑ์ปกติ: 21-35 วัน</span>
+        {/* 4 Responsive Stat Boxes */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+          <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">รอบเดือนเฉลี่ย</p>
+            <p className="text-xl font-extrabold text-slate-800 font-mono mt-0.5">{avgCycle} วัน</p>
+            <span className="text-[10px] text-slate-500 font-medium">เกณฑ์ปกติ: 21-35 วัน</span>
           </div>
 
-          <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 text-center">
-            <p className="text-[10px] text-slate-400 font-semibold uppercase">วันมาเฉลี่ย</p>
-            <p className="text-base font-bold text-slate-800 font-mono mt-0.5">{avgDuration} วัน</p>
-            <span className="text-[9px] text-slate-400">เกณฑ์ปกติ: 3-7 วัน</span>
+          <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">วันมาเฉลี่ย</p>
+            <p className="text-xl font-extrabold text-slate-800 font-mono mt-0.5">{avgDuration} วัน</p>
+            <span className="text-[10px] text-slate-500 font-medium">เกณฑ์ปกติ: 3-7 วัน</span>
           </div>
 
-          <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 text-center">
-            <p className="text-[10px] text-slate-400 font-semibold uppercase">ความแปรปรวน (Δ)</p>
-            <p className="text-base font-bold text-slate-800 font-mono mt-0.5">±{Math.round(variation / 2)} วัน</p>
-            <span className="text-[9px] text-emerald-600">อยู่ในเกณฑ์ดีเยี่ยม</span>
+          <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">ความแปรปรวน (Δ)</p>
+            <p className="text-xl font-extrabold text-slate-800 font-mono mt-0.5">±{Math.round(variation / 2)} วัน</p>
+            <span className="text-[10px] text-emerald-600 font-medium">อยู่ในเกณฑ์ดีเยี่ยม</span>
           </div>
 
-          <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 text-center">
-            <p className="text-[10px] text-slate-400 font-semibold uppercase">ประเมิน PCOS</p>
-            <p className={`text-xs font-bold mt-1 ${isPcosRisk ? 'text-amber-600' : 'text-emerald-600'}`}>
+          <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">ประเมิน PCOS</p>
+            <p className={`text-base font-extrabold mt-1 ${isPcosRisk ? 'text-amber-600' : 'text-emerald-600'}`}>
               {isPcosRisk ? 'ควรเฝ้าระวัง' : 'ความเสี่ยงต่ำ'}
             </p>
-            <span className="text-[9px] text-slate-400">Rotterdam Criteria</span>
+            <span className="text-[10px] text-slate-400">Rotterdam Criteria</span>
           </div>
         </div>
       </div>
 
-      {/* Cycle Length History Bar Chart */}
-      <div className="bg-white rounded-3xl p-5 border border-rose-100 shadow-xs space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-            <BarChart3 className="w-4 h-4 text-purple-500" />
-            ประวัติความยาวรอบเดือน 5 รอบล่าสุด (Cycle Trend)
-          </h3>
-          <span className="text-[10px] text-slate-400">เส้นประ = ค่าเฉลี่ย 28 วัน</span>
+      {/* Responsive 2-Column: Cycle Length Bar Chart & Symptoms Distribution */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* Cycle Length History Bar Chart */}
+        <div className="bg-white rounded-3xl p-5 border border-rose-100 shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-rose-50">
+            <h3 className="text-xs font-bold text-slate-800 flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-purple-500" />
+              ประวัติความยาวรอบเดือน 5 รอบล่าสุด (Cycle Trend)
+            </h3>
+            <span className="text-[10px] text-slate-400">เส้นประ = ค่าเฉลี่ย 28 วัน</span>
+          </div>
+
+          <div className="space-y-3 pt-1">
+            {pastCycles.map((cycle, idx) => {
+              const widthPercent = Math.min(100, Math.round((cycle.cycleLength / 40) * 100));
+              return (
+                <div key={cycle.id} className="space-y-1">
+                  <div className="flex justify-between text-xs text-slate-600">
+                    <span className="font-medium">
+                      รอบที่ {idx + 1} ({formatThaiDate(cycle.startDate, false)})
+                    </span>
+                    <span className="font-mono font-bold text-slate-800">{cycle.cycleLength} วัน</span>
+                  </div>
+                  <div className="relative w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className="absolute top-0 bottom-0 w-0.5 bg-rose-400/80 z-10"
+                      style={{ left: `${(28 / 40) * 100}%` }}
+                      title="มาตรฐาน 28 วัน"
+                    />
+                    <div
+                      className="h-full bg-gradient-to-r from-rose-300 to-rose-500 rounded-full"
+                      style={{ width: `${widthPercent}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="space-y-2 pt-2">
-          {pastCycles.map((cycle, idx) => {
-            const widthPercent = Math.min(100, Math.round((cycle.cycleLength / 40) * 100));
-            return (
-              <div key={cycle.id} className="space-y-1">
-                <div className="flex justify-between text-xs text-slate-600">
-                  <span className="font-medium">
-                    รอบที่ {idx + 1} ({formatThaiDate(cycle.startDate, false)})
-                  </span>
-                  <span className="font-mono font-bold text-slate-800">{cycle.cycleLength} วัน</span>
-                </div>
-                <div className="relative w-full h-3 bg-slate-100 rounded-full overflow-hidden">
-                  {/* 28 day marker line */}
-                  <div
-                    className="absolute top-0 bottom-0 w-0.5 bg-rose-400/70 z-10"
-                    style={{ left: `${(28 / 40) * 100}%` }}
-                    title="มาตรฐาน 28 วัน"
-                  />
-                  <div
-                    className="h-full bg-gradient-to-r from-rose-300 to-rose-500 rounded-full"
-                    style={{ width: `${widthPercent}%` }}
-                  />
-                </div>
+        {/* Symptoms & Red Flags Card */}
+        <div className="bg-white rounded-3xl p-5 border border-rose-100 shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-rose-50">
+            <h3 className="text-xs font-bold text-slate-800 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-500" />
+              การประเมินสัญญาณเตือนทางคลินิก (Red Flags)
+            </h3>
+            <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full">
+              เกณฑ์ปลอดภัย
+            </span>
+          </div>
+
+          <div className="space-y-2.5 text-xs">
+            <div className="p-3 rounded-2xl bg-emerald-50/60 border border-emerald-100/80 flex items-start gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-emerald-900">ไม่มีภาวะเลือดออกกะปริบกะปรอยผิดปกติ</p>
+                <p className="text-slate-600 mt-0.5">ไม่พบประวัติเลือดออกระหว่างรอบเดือนเกินกว่า 2 วันติดต่อกัน</p>
               </div>
-            );
-          })}
+            </div>
+
+            <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-2.5">
+              <CheckCircle2 className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-slate-800">อาการปวดท้องประจำเดือน (Dysmenorrhea)</p>
+                <p className="text-slate-600 mt-0.5">ปวดระดับปานกลางเฉพาะ 1-2 วันแรก และตอบสนองต่อการพักผ่อน</p>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-2.5">
+              <CheckCircle2 className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-slate-800">การตกไข่สม่ำเสมอ (Ovulatory Rhythm)</p>
+                <p className="text-slate-600 mt-0.5">พบมูกไข่ตกยืดได้และอุณหภูมิร่างกายสอดคล้องกับระยะรอบเดือน</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Symptoms Frequency Chart (Luteal & Menstrual) */}
+      {/* Doctor Checklist Card */}
       <div className="bg-white rounded-3xl p-5 border border-rose-100 shadow-xs space-y-3">
         <h3 className="text-xs font-bold text-slate-800">
-          ความถี่ของอาการที่พบบ่อย (Symptom Frequency)
+          หัวข้อแนะนำสำหรับพูดคุยกับแพทย์ในการตรวจสุขภาพประจำปี
         </h3>
-        <p className="text-[11px] text-slate-500">
-          ข้อมูลสำคัญช่วยให้สูตินรีแพทย์แยกระหว่างอาการปวดประจำเดือนทั่วไป (Dysmenorrhea) กับภาวะเยื่อบุโพรงมดลูกเจริญผิดที่ หรือ PMDD
-        </p>
-
-        <div className="space-y-2 pt-1 text-xs">
-          <div>
-            <div className="flex justify-between font-medium mb-1">
-              <span>ปวดท้องน้อย (Dysmenorrhea)</span>
-              <span className="text-rose-600 font-bold">พบบ่อยวันแรก (60%)</span>
-            </div>
-            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-              <div className="w-[60%] h-full bg-rose-400 rounded-full" />
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div className="p-3 rounded-2xl bg-rose-50/50 border border-rose-100">
+            <p className="font-bold text-slate-800">1. การตรวจคัดกรองมะเร็งปากมดลูก</p>
+            <p className="text-slate-500 mt-1">แนะนำตรวจ Pap Smear หรือ HPV DNA Test ทุก 3-5 ปี</p>
           </div>
-
-          <div>
-            <div className="flex justify-between font-medium mb-1">
-              <span>คัดตึงเต้านม (Mastalgia)</span>
-              <span className="text-purple-600 font-bold">ช่วงตกไข่ & ลูเทียล (45%)</span>
-            </div>
-            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-              <div className="w-[45%] h-full bg-purple-400 rounded-full" />
-            </div>
+          <div className="p-3 rounded-2xl bg-rose-50/50 border border-rose-100">
+            <p className="font-bold text-slate-800">2. อัลตราซาวด์มดลูกและรังไข่</p>
+            <p className="text-slate-500 mt-1">คัดกรองช็อกโกแลตซีสต์ เนื้องอกมดลูก และเยื่อบุโพรงมดลูก</p>
           </div>
-
-          <div>
-            <div className="flex justify-between font-medium mb-1">
-              <span>ท้องอืด / อาหารไม่ย่อย (Bloating)</span>
-              <span className="text-amber-600 font-bold">ช่วงระยะลูเทียล (30%)</span>
-            </div>
-            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-              <div className="w-[30%] h-full bg-amber-400 rounded-full" />
-            </div>
+          <div className="p-3 rounded-2xl bg-rose-50/50 border border-rose-100">
+            <p className="font-bold text-slate-800">3. ระดับฮอร์โมนและธาตุเหล็ก</p>
+            <p className="text-slate-500 mt-1">ตรวจความสมบูรณ์ของเม็ดเลือด (CBC) และระดับเฟอร์ริติน</p>
           </div>
         </div>
       </div>
 
-      {/* Print / Export Sheet Modal */}
+      {/* Printable Clinical Report Modal */}
       {showPrintModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="w-full max-w-2xl bg-white rounded-3xl p-6 sm:p-8 shadow-2xl my-8 space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200 no-print">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-3 sm:p-6 overflow-y-auto">
+          <div className="w-full max-w-2xl bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-rose-100 my-4 max-h-[92vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🌸</span>
+                <div>
+                  <h3 className="text-base font-bold text-slate-800">AuraFem Clinical Health Summary</h3>
+                  <p className="text-xs text-slate-500">เอกสารสรุปประวัติรอบเดือนและฮอร์โมนสำหรับสถานพยาบาล</p>
+                </div>
+              </div>
               <button
                 onClick={() => setShowPrintModal(false)}
-                className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800"
+                className="text-xs font-semibold text-slate-400 hover:text-slate-600 px-3 py-1.5 rounded-xl border border-slate-200"
               >
-                <ArrowLeft className="w-4 h-4" />
-                <span>กลับหน้าแอป</span>
+                ปิด
+              </button>
+            </div>
+
+            <div className="py-4 space-y-4 text-xs text-slate-700">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <div>
+                  <p className="text-slate-400 font-semibold">ชื่อผู้ใช้ / นามแฝง:</p>
+                  <p className="font-bold text-slate-800 text-sm">{user.nickname} (@{user.username})</p>
+                </div>
+                <div>
+                  <p className="text-slate-400 font-semibold">เป้าหมายทางสุขภาพ:</p>
+                  <p className="font-bold text-slate-800 text-sm">
+                    {user.goal === 'track_period' ? 'ติดตามรอบเดือนปกติ' : user.goal === 'trying_to_conceive' ? 'เตรียมพร้อมมีบุตร' : 'คุมกำเนิดธรรมชาติ'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-slate-400 font-semibold">รอบเดือนล่าสุดที่บันทึก:</p>
+                  <p className="font-bold text-slate-800">{formatThaiDateFull(user.lastPeriodStartDate)}</p>
+                </div>
+                <div>
+                  <p className="text-slate-400 font-semibold">ความสม่ำเสมอของรอบเดือน:</p>
+                  <p className="font-bold text-emerald-700">{prediction.regularityStatus} ({prediction.cycleRegularityScore}%)</p>
+                </div>
+              </div>
+
+              <div className="border border-slate-200 rounded-2xl p-4 space-y-2">
+                <h4 className="font-bold text-slate-800">ประวัติ 5 รอบเดือนย้อนหลัง:</h4>
+                <div className="divide-y divide-slate-100">
+                  {pastCycles.map((c, i) => (
+                    <div key={c.id} className="py-2 flex justify-between">
+                      <span>รอบที่ {i + 1}: วันเริ่ม {formatThaiDate(c.startDate)}</span>
+                      <span className="font-bold">{c.cycleLength} วัน (มีรอบเดือน {c.periodDuration} วัน)</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <p className="text-[11px] text-slate-400 italic">
+                * เอกสารนี้สร้างขึ้นจากบันทึกของผู้ใช้ผ่านแอปพลิเคชัน AuraFem เพื่อใช้ประกอบการวินิจฉัยของแพทย์ผู้เชี่ยวชาญเท่านั้น
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <button
+                onClick={() => setShowPrintModal(false)}
+                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+              >
+                ยกเลิก
               </button>
               <button
                 onClick={handlePrint}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-colors shadow-sm"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow-xs"
               >
                 <Printer className="w-4 h-4" />
-                <span>พิมพ์หรือบันทึก PDF รายงานนี้</span>
+                <span>พิมพ์หรือบันทึก PDF ทันที</span>
               </button>
-            </div>
-
-            {/* CLINICAL PDF EXPORT CONTENT */}
-            <div className="space-y-6 text-slate-900">
-              {/* Header Letterhead */}
-              <div className="flex items-start justify-between border-b pb-4">
-                <div>
-                  <h1 className="text-lg font-bold tracking-tight text-slate-900">
-                    AuraFem Medical Report: Menstrual Health Summary
-                  </h1>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    รายงานสรุปประวัติรอบเดือนและสุขภาพสูตินรีเวช สำหรับแพทย์ผู้ตรวจ
-                  </p>
-                </div>
-                <div className="text-right text-xs text-slate-500">
-                  <p className="font-semibold text-slate-800">AuraFem Clinical Export</p>
-                  <p>วันที่พิมพ์: {formatThaiDateFull(new Date().toISOString().split('T')[0])}</p>
-                </div>
-              </div>
-
-              {/* Patient Demographics */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3.5 bg-slate-50 rounded-xl text-xs">
-                <div>
-                  <span className="text-slate-400">ชื่อคนไข้:</span>
-                  <p className="font-semibold">{user.nickname} ({user.username})</p>
-                </div>
-                <div>
-                  <span className="text-slate-400">เป้าหมายการติดตาม:</span>
-                  <p className="font-semibold">
-                    {user.goal === 'track_period' ? 'ติดตามรอบเดือนทั่วไป' : user.goal}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-slate-400">รอบเดือนล่าสุด:</span>
-                  <p className="font-semibold">{formatThaiDate(user.lastPeriodStartDate)}</p>
-                </div>
-                <div>
-                  <span className="text-slate-400">ความสม่ำเสมอ:</span>
-                  <p className="font-semibold text-emerald-700">{prediction.regularityStatus}</p>
-                </div>
-              </div>
-
-              {/* Clinical Metrics Summary */}
-              <div className="space-y-2">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                  1. Clinical Menstrual Metrics (สถิติรอบเดือน)
-                </h3>
-                <table className="w-full text-xs text-left border border-slate-200">
-                  <thead className="bg-slate-100 text-slate-700">
-                    <tr>
-                      <th className="p-2 border-r">รอบที่</th>
-                      <th className="p-2 border-r">วันที่เริ่มมีประจำเดือน</th>
-                      <th className="p-2 border-r">ความยาวรอบเดือน</th>
-                      <th className="p-2 border-r">จำนวนวันที่มีเลือด</th>
-                      <th className="p-2">การประเมินทางคลินิก</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200">
-                    {pastCycles.map((c, i) => (
-                      <tr key={c.id}>
-                        <td className="p-2 border-r font-medium">#{i + 1}</td>
-                        <td className="p-2 border-r">{formatThaiDateFull(c.startDate)}</td>
-                        <td className="p-2 border-r font-mono font-bold">{c.cycleLength} วัน</td>
-                        <td className="p-2 border-r font-mono">{c.periodDuration} วัน</td>
-                        <td className="p-2 text-emerald-700 font-medium">
-                          {c.cycleLength >= 21 && c.cycleLength <= 35 ? 'ปกติ (Eumenorrhea)' : 'ผิดปกติ'}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* PCOS & Hormonal Screening Check */}
-              <div className="space-y-2">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                  2. PCOS Early Screening Indicator (ตามเกณฑ์ Rotterdam 2003)
-                </h3>
-                <div className="p-3 border border-slate-200 rounded-xl space-y-1.5 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span>1. ภาวะไข่ไม่ตกเรื้อรังหรือรอบเดือนขาดนาน (Oligo/Anovulation):</span>
-                    <span className="font-bold text-emerald-700">ไม่พบ (รอบเดือนสม่ำเสมอ 27-29 วัน)</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>2. อาการฮอร์โมนเพศชายเด่น (Hyperandrogenism) เช่น สิวเรื้อรัง ขนดก:</span>
-                    <span className="font-bold text-slate-700">บันทึกสิวระดับเล็กน้อยช่วงก่อนมีประจำเดือน</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>3. ลักษณะรังไข่หลายใบจากการตรวจอัลตราซาวด์ (PCO):</span>
-                    <span className="font-bold text-slate-500">รอผลการตรวจทางกายภาพและ USG จากแพทย์</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Doctor Notes Box */}
-              <div className="space-y-2 pt-2">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                  3. บันทึกผลการตรวจและคำสั่งการรักษาของแพทย์ (Gynecologist Remarks)
-                </h3>
-                <div className="h-24 border border-dashed border-slate-300 rounded-xl p-3 text-xs text-slate-400">
-                  ช่องสำหรับแพทย์เขียนคำวินิจฉัยและข้อแนะนำ...
-                </div>
-              </div>
-
-              {/* Signature Lines */}
-              <div className="pt-6 flex justify-between text-xs text-slate-600">
-                <div>
-                  <p>ลงชื่อคนไข้: ......................................................</p>
-                  <p className="mt-1 text-slate-400">({user.nickname})</p>
-                </div>
-                <div className="text-right">
-                  <p>ลงชื่อแพทย์ผู้ตรวจ: ......................................................</p>
-                  <p className="mt-1 text-slate-400">ว.พ. ...................................................</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>

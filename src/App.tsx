@@ -15,7 +15,7 @@ import {
   getTodayDateStr
 } from './utils/storage';
 import { calculateCyclePrediction } from './utils/cycleCalculations';
-import { MobileFrame, NavTab } from './components/MobileFrame';
+import { MobileFrame, NavTab, DeviceViewMode } from './components/MobileFrame';
 import { HomeDashboard } from './components/HomeDashboard';
 import { CalendarView } from './components/CalendarView';
 import { DailyTrackerModal } from './components/DailyTrackerModal';
@@ -33,12 +33,12 @@ export default function App() {
   const [pastCycles, setPastCycles] = useState<PastCycle[]>(loadPastCycles);
 
   const [currentTab, setCurrentTab] = useState<NavTab>('home');
+  const [deviceMode, setDeviceMode] = useState<DeviceViewMode>('mobile');
   const [isTrackerOpen, setIsTrackerOpen] = useState(false);
   const [trackerDate, setTrackerDate] = useState<string>(getTodayDateStr());
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isSpecDocOpen, setIsSpecDocOpen] = useState(false);
   const [isPinLocked, setIsPinLocked] = useState(false);
-  const [isExpandedView, setIsExpandedView] = useState(false);
   const [selectedPhaseGuide, setSelectedPhaseGuide] = useState<CyclePhase>('follicular');
 
   const todayStr = getTodayDateStr();
@@ -113,37 +113,39 @@ export default function App() {
           if (tab === 'tracker') {
             handleOpenTrackerForDate(todayStr);
           } else {
-            setCurrentTab(tab);
+            setCurrentTab(tab as NavTab);
           }
         }}
         onOpenDoc={() => setIsSpecDocOpen(true)}
         onOpenProfile={() => setIsOnboardingOpen(true)}
         onLockPin={() => setIsPinLocked(true)}
         user={user}
-        isExpandedView={isExpandedView}
-        onToggleExpand={() => setIsExpandedView(!isExpandedView)}
+        deviceMode={deviceMode}
+        onDeviceModeChange={setDeviceMode}
       >
-        {/* Sub-navigation bar inside app for Partner sync */}
-        <div className="flex items-center justify-between mb-3 px-1 no-print">
-          <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-slate-400">เป้าหมาย:</span>
-            <span className="font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">
-              {user.goal === 'track_period' ? '🌸 ติดตามรอบเดือน' : user.goal === 'trying_to_conceive' ? '🍼 เตรียมมีบุตร' : user.goal === 'contraception' ? '🛡️ คุมกำเนิด' : '🩺 สุขภาพ PCOS'}
-            </span>
-          </div>
+        {/* Sub-navigation bar inside app for Partner sync (Mobile & Tablet) */}
+        {deviceMode !== 'desktop' && (
+          <div className="flex items-center justify-between mb-3 px-1 no-print">
+            <div className="flex items-center gap-1.5 text-xs">
+              <span className="text-slate-400">เป้าหมาย:</span>
+              <span className="font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">
+                {user.goal === 'track_period' ? '🌸 ติดตามรอบเดือน' : user.goal === 'trying_to_conceive' ? '🍼 เตรียมมีบุตร' : user.goal === 'contraception' ? '🛡️ คุมกำเนิด' : '🩺 สุขภาพ PCOS'}
+              </span>
+            </div>
 
-          <button
-            onClick={() => setCurrentTab('partner')}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-              currentTab === 'partner'
-                ? 'bg-rose-500 text-white shadow-2xs'
-                : 'bg-white border border-rose-100 text-slate-600 hover:text-rose-600 hover:bg-rose-50'
-            }`}
-          >
-            <Users className="w-3.5 h-3.5" />
-            <span>โหมดคู่รัก</span>
-          </button>
-        </div>
+            <button
+              onClick={() => setCurrentTab('partner')}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                currentTab === 'partner'
+                  ? 'bg-rose-500 text-white shadow-2xs'
+                  : 'bg-white border border-rose-100 text-slate-600 hover:text-rose-600 hover:bg-rose-50'
+              }`}
+            >
+              <Users className="w-3.5 h-3.5" />
+              <span>โหมดคู่รัก</span>
+            </button>
+          </div>
+        )}
 
         {/* Tab 1: Home Dashboard */}
         {currentTab === 'home' && (
@@ -155,6 +157,7 @@ export default function App() {
             onOpenProfile={() => setIsOnboardingOpen(true)}
             onOpenPhaseGuide={handleOpenPhaseGuide}
             onLockPin={() => setIsPinLocked(true)}
+            isDesktop={deviceMode === 'desktop'}
           />
         )}
 
