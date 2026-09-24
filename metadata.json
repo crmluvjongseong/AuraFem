@@ -1,0 +1,6 @@
+{
+  "name": "AuraFem - ติดตามประจำเดือนและสุขภาพเฉพาะบุคคล",
+  "description": "แอปพลิเคชัน FemTech มินิมอล อบอุ่น สำหรับติดตามรอบเดือน ทำนายวันไข่ตก วิเคราะห์ฮอร์โมน 4 ระยะ โภชนาการ และสรุปรายงานส่งสูตินรีแพทย์",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
